@@ -1,6 +1,6 @@
 # Presyn
 
-Presyn is a local-first, CPU-optimized workplace presence, CCTV intelligence, face recognition, attendance, visitor management, security zone, and physical activity-state platform.
+Presyn is a planned local-first, CPU-optimized workplace presence, CCTV intelligence, face recognition, attendance, visitor management, security zone, and physical activity-state platform.
 
 ## Current Project Status
 
@@ -8,17 +8,30 @@ Presyn is a local-first, CPU-optimized workplace presence, CCTV intelligence, fa
 
 This repository currently contains the authoritative planning, architectural specifications, governance rules, and initial repository baseline. Application implementation has not yet begun. No features are claimed as implemented at this stage.
 
-For the single authoritative project standard, consult [PRESYN_MASTER_PLAN.md](file:///c:/Users/mhyah/Downloads/New%20folder/01_PROJECTS/CCTV_Face_Recognition_Attendance/PRESYN_MASTER_PLAN.md).
+For the single authoritative project standard, consult [PRESYN_MASTER_PLAN.md](PRESYN_MASTER_PLAN.md).
 
 ## Core Principles
 
-- **Local-First and Offline-Capable**: Core recognition, tracking, attendance, and analytics operate locally without mandatory external network or cloud connections.
-- **CPU-First Architecture**: Built and optimized for standard enterprise-class CPU execution (such as Intel Core i7-1355U) without GPU or CUDA dependencies.
-- **Truthful System State**: Complete prohibition of fabricated metrics, simulated dashboard values, fake customer accounts, or uncalibrated accuracy claims. Unpopulated views display clear empty states.
-- **Biometric Minimization**: Feature vectors (512-dimensional embeddings) are computed for matching while raw facial captures are not permanently stored in production databases.
-- **Auditability and Governance**: Every sensitive administrative action, manual attendance correction, and biometric profile adjustment is logged in an immutable audit trail.
+- **Local-First and Offline-Capable**: The planned platform is designed to operate locally without mandatory external network or cloud connections for core recognition and attendance.
+- **CPU-First Architecture**: Presyn will be built and optimized for standard enterprise-class CPU execution (such as Intel Core i7-1355U) without GPU or CUDA dependencies.
+- **Truthful System State**: Complete prohibition of fabricated metrics, simulated dashboard values, fake customer accounts, or uncalibrated accuracy claims. Unpopulated views will display clear empty states.
+- **Biometric Minimization**: Feature vectors (512-dimensional embeddings) will be computed for matching while raw facial captures are not permanently stored in production databases.
+- **Auditability and Governance**: Every sensitive administrative action, manual attendance correction, and biometric profile adjustment will be logged in an immutable audit trail.
 
-## Technology Stack Summary
+## Public Development Lifecycle and Security Boundary
+
+Presyn will remain public throughout development (Phases 00 through 19 and Phase 20 development). The repository will transition to private as the final lifecycle action only after Phase 20 is complete, all required Master Plan acceptance gates pass, and final release verification is signed off.
+
+Public repository development does NOT permit sensitive runtime or biometric data to enter Git. The project enforces strict boundary protection:
+
+- NEVER commit real biometric data or face-template dumps
+- NEVER commit real employee photographs or CCTV footage
+- NEVER commit camera snapshots or enrollment image matrices
+- NEVER commit production database files (*.db, *.sqlite, *.sqlite3)
+- NEVER commit credentials, private keys, API tokens, or secrets
+- NEVER commit private deployment configurations or sensitive workplace records
+
+## Planned Technology Stack Summary
 
 - **Backend Runtime**: Python 3.10.x
 - **API Framework**: FastAPI with Uvicorn ASGI server
@@ -50,7 +63,7 @@ For the single authoritative project standard, consult [PRESYN_MASTER_PLAN.md](f
 
 ## Implementation Phases and Acceptance Gates
 
-Development proceeds strictly in sequential phases according to [PRESYN_MASTER_PLAN.md](file:///c:/Users/mhyah/Downloads/New%20folder/01_PROJECTS/CCTV_Face_Recognition_Attendance/PRESYN_MASTER_PLAN.md):
+Development will proceed strictly in sequential phases according to [PRESYN_MASTER_PLAN.md](PRESYN_MASTER_PLAN.md):
 
 - **Phase 00**: Authority, Governance, Repository Baseline, and Planning (Completed)
 - **Phase 01**: Core Skeleton (FastAPI, React 18, Vite, Tailwind CSS, SQLite, Alembic, Health)
@@ -80,8 +93,8 @@ No phase is accepted without passing automated unit, integration, build, and sec
 
 Presyn is designed with strict biometric data protection principles:
 
-- Raw facial photography is discarded after feature vector extraction unless temporary snapshot retention is explicitly enabled by local policy.
-- An employee deletion request immediately purges all associated embedding vectors and biometric profiles.
+- Raw facial photography will be discarded after feature vector extraction unless temporary snapshot retention is explicitly enabled by local policy.
+- An employee deletion request will immediately purge all associated embedding vectors and biometric profiles.
 - System activity-state classifications (sitting, standing, walking) reflect physical space dynamics and must never be converted into automated employee productivity scores.
 - Deployment in production environments requires independent local legal review for workplace biometric compliance.
 

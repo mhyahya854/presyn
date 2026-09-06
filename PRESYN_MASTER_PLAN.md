@@ -23,6 +23,18 @@ This document (`PRESYN_MASTER_PLAN.md`) is the single canonical specification, d
 3. **Traceability**: Every functional, architectural, interface, security, and governance requirement carries a permanent, immutable Traceability ID (`PRESYN-*`).
 4. **Subordinate Documents**: `README.md` and supplementary documentation may summarize or reference this document, but they must never act as competing specifications.
 
+### 1.1 Repository Visibility Lifecycle Policy
+1. **Public Development Lifecycle**: The Presyn repository (`mhyahya854/presyn`) must remain PUBLIC throughout development across Phases 00 through 19 and throughout active Phase 20 development.
+2. **Post-Completion Privatization**: The repository transitions from PUBLIC to PRIVATE as the final operational release action only after the entire project is 100% complete, Phase 20 has verified that every REQUIRED Master Plan requirement is IMPLEMENTED with concrete evidence, and all final release security and audit gates pass.
+3. **Prohibition of Intermediate Privatization**: No intermediate prompt, subagent, or developer action may change repository visibility to private during development. No future prompt may alter repository visibility unless permitted by this lifecycle rule or explicitly overridden by the project owner.
+4. **Permanent Security Boundary**: Public repository visibility does NOT permit sensitive runtime, biometric, or organizational data into Git. The security boundary strictly mandates:
+   - NEVER commit real biometric feature embeddings or raw template dumps
+   - NEVER commit real employee photographs, enrollment captures, or CCTV footage
+   - NEVER commit camera snapshots or uncurated facial crops
+   - NEVER commit database binaries (*.db, *.sqlite, *.sqlite3)
+   - NEVER commit credentials, secret keys, API tokens, or production configurations
+   - NEVER commit private workplace records or sensitive operational logs
+
 ---
 
 ## 2. IMMUTABLE DESIGN RULES
@@ -812,7 +824,14 @@ All modifications to this document must be appended to this immutable change log
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
 | Date       | Affected Req IDs      | Description of Modification              | Rationale           | Decision | Commit  |
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
-| 2026-09-06 | ALL (Baseline Init)   | Initial creation of Canonical Master Plan| Prompt 1 Authority  | APPROVED | Initial |
+| 2026-09-06 | ALL (Baseline Init)   | Initial creation of Canonical Master Plan| Prompt 1 Authority  | APPROVED | e48f478 |
+| 2026-09-06 | PRESYN-GEN-005,       | Prompt 1B Governance Correction: lock    | Explicit project    | APPROVED | Pending |
+|            | PRESYN-DESIGN-008-018 | public development lifecycle (privatize  | owner decision &    |          | P1B     |
+|            |                       | only after Phase 20 complete); expand    | audit granularity   |          |         |
+|            |                       | granular design requirements (009-018);  | standard            |          |         |
+|            |                       | reconcile PRESYN-DESIGN-008 as governance|                     |          |         |
+|            |                       | obligation and set concrete pages/assets |                     |          |         |
+|            |                       | to NOT IMPLEMENTED until code verified.  |                     |          |         |
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
 ```
 
@@ -827,6 +846,7 @@ Every capability in Presyn is governed by an explicit, immutable Traceability ID
 - `PRESYN-GEN-002`: Readme maintains subordinate linkage without competing specifications.
 - `PRESYN-GEN-003`: Permanent 10-step Git workflow enforced across all prompts.
 - `PRESYN-GEN-004`: Immutable Change Control Log maintained for all specification adjustments.
+- `PRESYN-GEN-005`: Repository Visibility Lifecycle (Repository remains PUBLIC through Phases 00 to 19 and Phase 20 development; transitions to PRIVATE only after 100% Phase 20 completion and final release acceptance).
 
 ### 29.2 Immutable Design Rules (`PRESYN-DESIGN-*`)
 - `PRESYN-DESIGN-001`: Strict prohibition of purple gradients and gradient-heavy SaaS visuals.
@@ -836,7 +856,19 @@ Every capability in Presyn is governed by an explicit, immutable Traceability ID
 - `PRESYN-DESIGN-005`: Prohibition of emojis as interface icons (use `lucide-react` SVG icons exclusively).
 - `PRESYN-DESIGN-006`: Prohibition of em dashes in marketing, technical, and product copy.
 - `PRESYN-DESIGN-007`: Elimination of AI-slop imagery, stock photography, and hyperbolic AI buzzwords.
-- `PRESYN-DESIGN-008`: Accessible Privacy Policy and Terms & Conditions pages linked in global footer.
+- `PRESYN-DESIGN-008`: Legal and privacy page requirement recorded as an immutable design obligation in specification.
+- `PRESYN-DESIGN-009`: Custom Presyn favicon exists and is used by the production frontend.
+- `PRESYN-DESIGN-010`: Dedicated Privacy Policy page exists and is reachable from persistent footer navigation.
+- `PRESYN-DESIGN-011`: Dedicated Terms & Conditions page exists and is reachable from persistent footer navigation.
+- `PRESYN-DESIGN-012`: No "Made with AI" badge/tag and no unnecessary "Powered by AI" branding in production UI.
+- `PRESYN-DESIGN-013`: No cursor-following animation, custom animated cursor, or trailing-pointer effect.
+- `PRESYN-DESIGN-014`: No AI-slop photography, generated fake employees, generated fake offices, or misleading synthetic workplace imagery.
+- `PRESYN-DESIGN-015`: No AI-slop copy, exaggerated AI marketing language, or fake hero claims.
+- `PRESYN-DESIGN-016`: No fabricated reviews, testimonials, customer logos, customer accounts, customer identities, case studies, production metrics, counters, or social proof.
+- `PRESYN-DESIGN-017`: No excessive scroll animation, scroll-jacking, gratuitous parallax, or over-the-top page motion.
+- `PRESYN-DESIGN-018`: Custom brand assets and product imagery must never weaken biometric/runtime Git safety boundaries.
+
+Note: Requirements 009 through 018 provide explicit, item-by-item final audit granularity for the immutable design and brand rules, complementing and operationalizing requirements 001 through 008 without superseding them.
 
 ### 29.3 Core Operating & Hardware Constraints (`PRESYN-CONST-*`)
 - `PRESYN-CONST-001`: Windows and Linux local-first CPU deployment without GPU/CUDA requirement.
@@ -932,6 +964,7 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-GEN-002   | Subordinate README Linkage                           | Phase 00      | README.md               | Manual Inspection       | IMPLEMENTED     | Clear pointer without competing specs    |
 | PRESYN-GEN-003   | Permanent 10-Step Git Workflow                       | Phase 00      | PRESYN_MASTER_PLAN.md   | Verification Run        | IMPLEMENTED     | Mandatory for all future phases          |
 | PRESYN-GEN-004   | Immutable Change Control Log                         | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 28 Baseline     | IMPLEMENTED     | Baseline established                     |
+| PRESYN-GEN-005   | Repository Visibility Lifecycle (Public in Dev, Priv)| Phase 00      | Master Plan Sec 1.1, 28 | gh repo view (PUBLIC)   | IMPLEMENTED     | Public dev lifecycle; private post-P20   |
 | PRESYN-DESIGN-001| Prohibition of Purple Gradients & SaaS Visuals       | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
 | PRESYN-DESIGN-002| Rectangular / Lightly Rounded Controls; No Pills     | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
 | PRESYN-DESIGN-003| Prohibition of Fabricated Data / Fake Social Proof   | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
@@ -939,7 +972,17 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-DESIGN-005| Prohibition of Emojis as Interface Icons             | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
 | PRESYN-DESIGN-006| Prohibition of Em Dashes in Copy                     | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
 | PRESYN-DESIGN-007| Prohibition of AI-Slop Imagery and Buzzwords         | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
-| PRESYN-DESIGN-008| Accessible Privacy Policy & Terms Pages              | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 3 Baseline      | IMPLEMENTED     | Architecture and routing planned         |
+| PRESYN-DESIGN-008| Accessible Privacy & Terms Governance Obligation     | Phase 00      | Master Plan Section 3   | Manual Inspection       | IMPLEMENTED     | Governance recorded; pages in 010/011    |
+| PRESYN-DESIGN-009| Custom Presyn SVG Favicon Used by Frontend           | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01; SVG asset required     |
+| PRESYN-DESIGN-010| Dedicated Privacy Policy Page with Footer Access     | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 19              |
+| PRESYN-DESIGN-011| Dedicated Terms & Conditions Page with Footer Access | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 19              |
+| PRESYN-DESIGN-012| No "Made with AI" Tags or Unnecessary AI Badges      | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; UI audit    |
+| PRESYN-DESIGN-013| No Cursor-Following Animations or Pointer Trails     | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; UI audit    |
+| PRESYN-DESIGN-014| No AI-Slop Photography or Fake Employee Stock Media  | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Asset audit |
+| PRESYN-DESIGN-015| No AI-Slop Copy, Exaggerated Claims, or Fake Metrics | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Copy audit  |
+| PRESYN-DESIGN-016| No Fabricated Reviews, Logos, Accounts, or Counters  | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; UI audit    |
+| PRESYN-DESIGN-017| No Excessive Scroll Animation or Parallax Gimmick    | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Motion audit|
+| PRESYN-DESIGN-018| Brand Assets Never Weaken Git Safety Boundaries      | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Git audit   |
 | PRESYN-CONST-001 | Local-First CPU Architecture (No CUDA)               | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
 | PRESYN-CONST-002 | Target Office CPU Optimization (Core i7-1355U class) | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 18              |
 | PRESYN-CONST-003 | 100+ Employees / ~5,000 Embedding Capacity Envelope  | Phase 05      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 05 / Phase 18              |
