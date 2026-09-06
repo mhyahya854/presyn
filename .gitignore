@@ -1,0 +1,94 @@
+# Presyn Git Ignore File
+# Biometric, CCTV, database, runtime, and security boundary protection
+
+# Environment and Secret Files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+secrets/
+
+# Python Virtual Environments and Caches
+venv/
+.venv/
+env/
+.env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node and Frontend
+node_modules/
+dist/
+build/
+.next/
+out/
+.turbo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE and Editor Configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Databases and Storage
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Data and Runtime Media Directories
+data/*
+!data/.gitkeep
+snapshots/
+recordings/
+exports/
+temp/
+tmp/
+scratch/
+
+# Biometric and Media Assets (Strict Prohibition)
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.webp
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.h264
+
+# Machine Learning Models (Keep Repository Lightweight and Clean)
+models/*
+!models/.gitkeep
+*.onnx
+*.pt
+*.pth
+*.bin
+*.weights
+*.engine
+*.tflite
+
+# Logs
+logs/
+*.log
