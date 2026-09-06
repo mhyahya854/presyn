@@ -1,0 +1,10 @@
+# Presyn Phase 01 Core Runtime Dependencies
+# Python 3.10.x compatible
+fastapi>=0.110.0,<0.116.0
+uvicorn[standard]>=0.28.0,<0.35.0
+pydantic>=2.6.0,<3.0.0
+pydantic-settings>=2.2.0,<3.0.0
+python-dotenv>=1.0.0,<2.0.0
+sqlalchemy>=2.0.28,<2.1.0
+alembic>=1.13.1,<2.0.0
+psutil>=5.9.8,<7.0.0

@@ -286,6 +286,7 @@ Optional capabilities must never compromise the resilience, startup speed, or ba
 Presyn enforces a strict architectural separation between **Person Tracking** (spatial persistence) and **Face Recognition** (identity resolution):
 
 ```
+[SCHEMA EXAMPLE - SYNTHETIC VALUES (EXAMPLE ONLY - NOT PRODUCTION DATA)]
 Video Frame
    |
    v
@@ -566,7 +567,7 @@ The Presyn V1 database uses SQLite managed via SQLAlchemy 2.0 with Alembic migra
 20. `users_admins`: Console authentication principals (id, username, password_hash, role, is_active).
 21. `roles`: Role definitions and permission scopes (id, name, permissions_json).
 22. `audit_logs`: Immutable security action log (id, actor_id, action, target_type, target_id, timestamp, details_json).
-23. `model_versions`: Tracking active model files, hashes, and calibration states (id, module_name, model_file, md5_hash, loaded_at).
+23. `model_versions`: Tracking active model files, hashes, and calibration states (id, module_name, model_file, sha256_hash, loaded_at).
 
 ---
 
@@ -592,6 +593,7 @@ The Presyn V1 database uses SQLite managed via SQLAlchemy 2.0 with Alembic migra
 ### 21.2 Stable Live Event Contract (WebSocket Schema)
 All real-time events broadcast over `/api/v1/ws/live` conform to a standardized JSON schema. Frontend clients safely handle null or absent optional properties:
 
+SCHEMA EXAMPLE - SYNTHETIC VALUES (EXAMPLE ONLY - NOT PRODUCTION DATA):
 ```json
 {
   "event_id": "evt_9b1c7f4a-8d23-4c91-9876-1a2b3c4d5e6f",
@@ -832,6 +834,13 @@ All modifications to this document must be appended to this immutable change log
 |            |                       | reconcile PRESYN-DESIGN-008 as governance|                     |          |         |
 |            |                       | obligation and set concrete pages/assets |                     |          |         |
 |            |                       | to NOT IMPLEMENTED until code verified.  |                     |          |         |
+| 2026-09-06 | PRESYN-GEN-005        | Finalize Prompt 1B commit provenance hash| Post-commit audit   | APPROVED | 71df599 |
+| 2026-09-06 | PRESYN-DATA-001       | Update model_versions to sha256_hash;    | Security & integrity| APPROVED | In Prog |
+|            | and schema examples   | label schema examples as synthetic.      | standard update     |          | (Ph 01) |
+| 2026-09-06 | Phase 01 Requirements | Phase 01 Core Application Skeleton:      | Phase 01 Foundation | APPROVED | In Prog |
+|            | PRESYN-DESIGN-009-018 | FastAPI, 23 models, Alembic, health API, | milestone delivery  |          | (Ph 01) |
+|            | PRESYN-DATA-001-003   | React 18, Vite, Tailwind, 6 domain shells|                     |          |         |
+|            | PRESYN-UI-001-002     | favicon, legal pages, tests, CI.         |                     |          |         |
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
 ```
 
@@ -973,17 +982,17 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-DESIGN-006| Prohibition of Em Dashes in Copy                     | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
 | PRESYN-DESIGN-007| Prohibition of AI-Slop Imagery and Buzzwords         | Phase 00      | PRESYN_MASTER_PLAN.md   | Section 2 Audit         | IMPLEMENTED     | Immutable design rule recorded           |
 | PRESYN-DESIGN-008| Accessible Privacy & Terms Governance Obligation     | Phase 00      | Master Plan Section 3   | Manual Inspection       | IMPLEMENTED     | Governance recorded; pages in 010/011    |
-| PRESYN-DESIGN-009| Custom Presyn SVG Favicon Used by Frontend           | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01; SVG asset required     |
-| PRESYN-DESIGN-010| Dedicated Privacy Policy Page with Footer Access     | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 19              |
-| PRESYN-DESIGN-011| Dedicated Terms & Conditions Page with Footer Access | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 19              |
-| PRESYN-DESIGN-012| No "Made with AI" Tags or Unnecessary AI Badges      | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; UI audit    |
-| PRESYN-DESIGN-013| No Cursor-Following Animations or Pointer Trails     | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; UI audit    |
-| PRESYN-DESIGN-014| No AI-Slop Photography or Fake Employee Stock Media  | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Asset audit |
-| PRESYN-DESIGN-015| No AI-Slop Copy, Exaggerated Claims, or Fake Metrics | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Copy audit  |
-| PRESYN-DESIGN-016| No Fabricated Reviews, Logos, Accounts, or Counters  | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; UI audit    |
-| PRESYN-DESIGN-017| No Excessive Scroll Animation or Parallax Gimmick    | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Motion audit|
-| PRESYN-DESIGN-018| Brand Assets Never Weaken Git Safety Boundaries      | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 20; Git audit   |
-| PRESYN-CONST-001 | Local-First CPU Architecture (No CUDA)               | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
+| PRESYN-DESIGN-009| Custom Presyn SVG Favicon Used by Frontend           | Phase 01      | frontend/public/favicon | vitest design_rules.test | IMPLEMENTED     | Custom geometric SVG favicon in index.html|
+| PRESYN-DESIGN-010| Dedicated Privacy Policy Page with Footer Access     | Phase 01      | frontend/src/pages/Priv | vitest App.test.tsx      | IMPLEMENTED     | Accessible /privacy page and footer link  |
+| PRESYN-DESIGN-011| Dedicated Terms & Conditions Page with Footer Access | Phase 01      | frontend/src/pages/Term | vitest App.test.tsx      | IMPLEMENTED     | Accessible /terms page and footer link    |
+| PRESYN-DESIGN-012| No "Made with AI" Tags or Unnecessary AI Badges      | Phase 01      | Clean source / UI tree  | audit_compliance.py G2   | IMPLEMENTED     | Zero AI badges in source or rendered UI   |
+| PRESYN-DESIGN-013| No Cursor-Following Animations or Pointer Trails     | Phase 01      | Native CSS cursor       | audit_compliance.py G3   | IMPLEMENTED     | Standard cursor; zero pointer animations  |
+| PRESYN-DESIGN-014| No AI-Slop Photography or Fake Employee Stock Media  | Phase 01      | Zero tracked photo bins | audit_compliance.py G4   | IMPLEMENTED     | Zero stock photos; truthful empty states  |
+| PRESYN-DESIGN-015| No AI-Slop Copy, Exaggerated Claims, or Fake Metrics | Phase 01      | Real telemetry copy only| vitest pages.test.tsx    | IMPLEMENTED     | Truthful empty states on all hub pages    |
+| PRESYN-DESIGN-016| No Fabricated Reviews, Logos, Accounts, or Counters  | Phase 01      | Truthful UI empty states| vitest App.test.tsx      | IMPLEMENTED     | Zero fake reviews, logos, or demo accounts|
+| PRESYN-DESIGN-017| No Excessive Scroll Animation or Parallax Gimmick    | Phase 01      | Standard CSS layout     | Frontend code inspection | IMPLEMENTED     | Zero parallax or scroll-jacking libraries |
+| PRESYN-DESIGN-018| Brand Assets Never Weaken Git Safety Boundaries      | Phase 01      | SVG only; strict ignore | audit_compliance.py G4   | IMPLEMENTED     | Zero binary models or biometrics in git   |
+| PRESYN-CONST-001 | Local-First CPU Architecture (No CUDA)               | Phase 01      | CPU backend dependencies| pip check; test_config   | PARTIAL         | Foundation established; CV in Phase 02+   |
 | PRESYN-CONST-002 | Target Office CPU Optimization (Core i7-1355U class) | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 18              |
 | PRESYN-CONST-003 | 100+ Employees / ~5,000 Embedding Capacity Envelope  | Phase 05      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 05 / Phase 18              |
 | PRESYN-CONST-004 | 90-95% Calibrated Recognition Accuracy Envelope      | Phase 06      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 06                         |
@@ -1020,19 +1029,19 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-OPT-002   | Optional Mask Detection & Stricter Matching Policy    | Phase 14      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 14                         |
 | PRESYN-OPT-003   | Optional Liveness Probe (Unavailable != Passed)       | Phase 15      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 15                         |
 | PRESYN-OPT-004   | Optional Aggregate Facial Expression Trend Analysis   | Phase 17      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 17                         |
-| PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
-| PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
-| PRESYN-DATA-003  | CCTV Storage Boundary (No 24/7 Video Archiving)       | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
-| PRESYN-API-001   | Versioned REST API Architecture (`/api/v1`)           | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
+| PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | backend/app/db/models   | test_models.py (14 tests)| IMPLEMENTED     | 23 domain models; sha256_hash standard    |
+| PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | alembic.ini, migrations | test_migrations.py (3x)  | IMPLEMENTED     | Revision fc17a53ea5e7 up/down/re-up passes|
+| PRESYN-DATA-003  | CCTV Storage Boundary (No 24/7 Video Archiving)       | Phase 01      | DB schema / .gitignore  | test_models.py           | PARTIAL         | Schema boundaries defined; video in Ph 02 |
+| PRESYN-API-001   | Versioned REST API Architecture (`/api/v1`)           | Phase 01      | backend/app/api/router  | test_health_system.py    | PARTIAL         | Health & system v1 live; CRUD in Ph 04-13 |
 | PRESYN-API-002   | Native WebSocket Live Streaming Contract              | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
-| PRESYN-UI-001    | Six Primary Operational Information Architecture Hubs | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
-| PRESYN-UI-002    | High-Legibility Modern Interface (React + Tailwind)   | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
+| PRESYN-UI-001    | Six Primary Operational Information Architecture Hubs | Phase 01      | 6 domain pages & App    | vitest App.test.tsx      | IMPLEMENTED     | Live, Attendance, People, Security, etc.  |
+| PRESYN-UI-002    | High-Legibility Modern Interface (React + Tailwind)   | Phase 01      | React 18, Vite, Tailwind| npm run build; vitest    | IMPLEMENTED     | Clean slate theme; high-contrast tokens   |
 | PRESYN-UI-003    | Project-Owned SVG Visualizations (No Bloat)           | Phase 16      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 16                         |
 | PRESYN-SEC-001   | Biometric Vector Minimization & Template Erasure      | Phase 04      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 04                         |
 | PRESYN-SEC-002   | Role-Based Access Control (RBAC) Governance           | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
-| PRESYN-SEC-003   | Immutable Append-Only Audit Logging Architecture      | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
+| PRESYN-SEC-003   | Immutable Append-Only Audit Logging Architecture      | Phase 01      | audit_log model schema  | test_models.py           | PARTIAL         | Schema foundation live; signing in Ph 19  |
 | PRESYN-SEC-004   | Granular Data Retention Policies and Automated Purge  | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
-| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01                         |
+| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | pytest & vitest, CI     | 14 pytest, 17 vitest, CI | PARTIAL         | Core test harness live; expands per phase |
 | PRESYN-TEST-002  | 100+ Identity / 5,000 Vector Scale Benchmark Suite    | Phase 18      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 18                         |
 | PRESYN-TEST-003  | 1-Hour Soak Stability Verification Test               | Phase 20      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 20                         |
 +------------------+------------------------------------------------------+---------------+-------------------------+-------------------------+-----------------+------------------------------------------+

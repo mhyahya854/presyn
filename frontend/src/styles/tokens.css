@@ -1,0 +1,16 @@
+:root {
+  --color-presyn-bg: #090d16;
+  --color-presyn-surface: #111726;
+  --color-presyn-elevated: #172033;
+  --color-presyn-border: #1e293b;
+  --color-presyn-border-subtle: #172030;
+  --color-presyn-text: #f8fafc;
+  --color-presyn-text-muted: #94a3b8;
+  --color-presyn-text-dim: #64748b;
+  --color-presyn-primary: #2563eb;
+  --color-presyn-primary-hover: #1d4ed8;
+  --color-presyn-success: #10b981;
+  --color-presyn-warning: #f59e0b;
+  --color-presyn-danger: #ef4444;
+  --color-presyn-focus: #3b82f6;
+}

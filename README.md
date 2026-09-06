@@ -4,9 +4,11 @@ Presyn is a planned local-first, CPU-optimized workplace presence, CCTV intellig
 
 ## Current Project Status
 
-**Baseline Governance and Planning Stage (Phase 00)**
+**Phase 01 Implemented: Core Application Skeleton & Database Foundation**
 
-This repository currently contains the authoritative planning, architectural specifications, governance rules, and initial repository baseline. Application implementation has not yet begun. No features are claimed as implemented at this stage.
+Phase 01 is implemented and verified. The repository contains the operational FastAPI backend skeleton, 23 V1 relational domain models, Alembic migration infrastructure, truthful health and system telemetry endpoints, React 18 / TypeScript / Vite frontend shell with the six planned operational hubs, custom geometric SVG favicon, dedicated Privacy Policy and Terms & Conditions pages, deterministic test suites (pytest and vitest), automated compliance audit scripts, and GitHub Actions CI.
+
+Camera ingestion, face detection, and biometric pipelines remain deliberately unconstructed and will activate beginning in Phase 02.
 
 For the single authoritative project standard, consult [PRESYN_MASTER_PLAN.md](PRESYN_MASTER_PLAN.md).
 
@@ -66,7 +68,7 @@ Public repository development does NOT permit sensitive runtime or biometric dat
 Development will proceed strictly in sequential phases according to [PRESYN_MASTER_PLAN.md](PRESYN_MASTER_PLAN.md):
 
 - **Phase 00**: Authority, Governance, Repository Baseline, and Planning (Completed)
-- **Phase 01**: Core Skeleton (FastAPI, React 18, Vite, Tailwind CSS, SQLite, Alembic, Health)
+- **Phase 01**: Core Skeleton (FastAPI, React 18, Vite, Tailwind CSS, SQLite, Alembic, Health) (Completed)
 - **Phase 02**: Camera Ingestion Engine (Webcam, RTSP, Decoupled Queues, Reconnect, WS Video)
 - **Phase 03**: Face Detection & Quality Gating (SCRFD ONNX CPU, Landmarks, Blur/Size Filters)
 - **Phase 04**: Employee Domain Model & Five-View Interactive Enrollment Wizard
@@ -88,6 +90,52 @@ Development will proceed strictly in sequential phases according to [PRESYN_MAST
 - **Phase 20**: Comprehensive Acceptance Verification, Soak Testing, & Master Plan Sign-Off
 
 No phase is accepted without passing automated unit, integration, build, and security quality gates.
+
+## Development Commands
+
+### Backend
+
+```bash
+# Setup Python virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .\.venv\Scripts\activate
+
+# Install dependencies
+pip install -r backend/requirements.txt -r backend/requirements-dev.txt
+pip check
+
+# Run database migrations
+alembic -c backend/alembic.ini upgrade head
+
+# Run backend tests
+pytest
+
+# Launch backend server
+python backend/run.py
+```
+
+### Frontend
+
+```bash
+# Install frontend dependencies
+cd frontend
+npm install
+
+# Run frontend tests
+npm test
+
+# Launch local development server
+npm run dev
+
+# Build production bundle
+npm run build
+```
+
+### Compliance & Governance Audit
+
+```bash
+python scripts/audit_compliance.py
+```
 
 ## Privacy, Security, and Biometric Governance
 
