@@ -1,17 +1,21 @@
 """Presyn FastAPI Application Entrypoint."""
 
+import asyncio
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.app.api.router import api_v1_router
+from backend.app.camera.events import live_event_hub
+from backend.app.camera.manager import camera_manager
 from backend.app.core.config import settings
 from backend.app.core.exceptions import PresynException
 from backend.app.core.logging import logger
 import backend.app.db.models  # noqa: F401
-from backend.app.db.session import ensure_data_directory
+from backend.app.db.session import ensure_data_directory, get_db
 
 
 @asynccontextmanager
@@ -19,8 +23,29 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan context manager handling startup and shutdown events."""
     logger.info("Initializing Presyn Platform (Environment: %s)", settings.ENVIRONMENT)
     ensure_data_directory(settings.DATABASE_URL)
+
+    # Register asyncio loop with LiveEventHub for async event broadcasting from worker threads
+    live_event_hub.set_loop(asyncio.get_running_loop())
+
+    # Launch background capture workers for any pre-configured active cameras
+    try:
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            camera_manager.startup_active_cameras(db)
+        finally:
+            try:
+                next(db_gen)
+            except StopIteration:
+                pass
+    except Exception as exc:
+        logger.warning("Could not auto-start cameras on startup: %s", exc)
+
     yield
-    logger.info("Shutting down Presyn Platform")
+
+    logger.info("Shutting down Presyn Platform - stopping all camera workers")
+    camera_manager.stop_all(timeout=3.0)
+    logger.info("Presyn Platform shutdown complete")
 
 
 app = FastAPI(
@@ -56,6 +81,22 @@ async def presyn_exception_handler(request: Request, exc: PresynException) -> JS
             "message": exc.message,
             "details": exc.details,
         },
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    """Sanitized validation error handler masking sensitive input payload echoes."""
+    errors = []
+    for err in exc.errors():
+        errors.append({
+            "loc": list(err.get("loc", [])),
+            "msg": err.get("msg", "Validation error"),
+            "type": err.get("type", "value_error"),
+        })
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": errors},
     )
 
 

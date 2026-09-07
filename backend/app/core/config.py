@@ -43,7 +43,13 @@ class Settings(BaseSettings):
     PROCESSING_FPS: int = Field(default=5, description="Target processing frame rate per camera")
     FRAME_WIDTH: int = Field(default=1280, description="Target frame width")
     FRAME_HEIGHT: int = Field(default=720, description="Target frame height")
-    CAMERA_RECONNECT_INTERVAL_SECONDS: int = Field(default=5, description="Initial reconnect delay in seconds")
+    CAMERA_RECONNECT_INTERVAL_SECONDS: int = Field(default=2, description="Initial reconnect delay in seconds")
+    CAMERA_RECONNECT_INITIAL_SECONDS: int = Field(default=2, description="Initial reconnect backoff delay in seconds")
+    CAMERA_RECONNECT_MAX_SECONDS: int = Field(default=30, description="Maximum reconnect backoff delay cap in seconds")
+    CAMERA_PREVIEW_FPS: int = Field(default=10, description="Target preview frame rate for browser streaming")
+    CAMERA_JPEG_QUALITY: int = Field(default=75, description="JPEG quality for live preview encoding (1-100)")
+    CAMERA_PREVIEW_MAX_WIDTH: int = Field(default=640, description="Maximum width for browser preview JPEG encoding")
+    CAMERA_READ_FAILURE_THRESHOLD: int = Field(default=5, description="Consecutive read failure tolerance before reconnect")
     CAMERA_MAX_RECONNECT_ATTEMPTS: int = Field(default=10, description="Maximum camera reconnect attempts")
 
     # Face Quality and Matching Thresholds

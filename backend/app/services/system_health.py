@@ -41,6 +41,25 @@ class SystemHealthService:
             cpu_percent = 0.0
             memory_percent = 0.0
 
+        # 3. Camera Subsystem Aggregate Health (Zero secrets or URLs)
+        try:
+            from backend.app.camera.manager import camera_manager
+            from backend.app.db.models.camera import Camera
+            from backend.app.schemas.health import CameraSubsystemHealth
+
+            total_cameras = db.query(Camera).count()
+            cam_summary = camera_manager.get_subsystem_summary(total_configured=total_cameras)
+            camera_health = CameraSubsystemHealth(
+                status=cam_summary["status"],
+                configured=cam_summary["configured"],
+                running=cam_summary["running"],
+                online=cam_summary["online"],
+                degraded=cam_summary["degraded"],
+                offline=cam_summary["offline"],
+            )
+        except Exception:
+            camera_health = None
+
         uptime_seconds = round(time.time() - PROCESS_START_TIME, 2)
         overall_status = "healthy" if db_status == "connected" else "degraded"
 
@@ -58,6 +77,7 @@ class SystemHealthService:
                 memory_percent=memory_percent,
                 uptime_seconds=uptime_seconds,
             ),
+            camera_subsystem=camera_health,
         )
 
     @staticmethod
@@ -72,7 +92,7 @@ class SystemHealthService:
             target_hardware="Intel Core i7-1355U / Modern x86_64 CPU",
             registered_tables=table_count,
             subsystems=SubsystemStatus(
-                camera_ingestion="not_implemented",  # Phase 02
+                camera_ingestion="operational",      # Phase 02 Implemented
                 face_detection="not_implemented",    # Phase 03
                 face_recognition="not_implemented",  # Phase 05
                 person_tracking="not_implemented",   # Phase 10

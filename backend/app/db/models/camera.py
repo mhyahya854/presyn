@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, List, Optional
-from urllib.parse import urlsplit
+from typing import TYPE_CHECKING, List, Optional, Set
+from urllib.parse import parse_qsl, urlsplit
 
 from sqlalchemy import Boolean, CheckConstraint, Enum as SQLEnum, Integer, String, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
@@ -14,6 +14,19 @@ if TYPE_CHECKING:
     from backend.app.db.models.zone import Zone
 
 _CREDENTIAL_PATTERN = re.compile(r"^[a-zA-Z0-9+.-]+://[^/]*@")
+_SENSITIVE_QUERY_KEYS: Set[str] = {
+    "password",
+    "passwd",
+    "pwd",
+    "token",
+    "access_token",
+    "auth_token",
+    "api_key",
+    "apikey",
+    "secret",
+    "signature",
+    "sig",
+}
 
 
 class Camera(Base, TimestampMixin):
@@ -68,6 +81,15 @@ class Camera(Base, TimestampMixin):
                     "RTSP URL must not contain embedded credentials or userinfo. "
                     "Use credential_ref for camera authentication."
                 )
+            if parsed.query:
+                query_params = parse_qsl(parsed.query, keep_blank_values=True)
+                for param_key, _ in query_params:
+                    cleaned_key = param_key.lower().replace("-", "_")
+                    if cleaned_key in _SENSITIVE_QUERY_KEYS:
+                        raise ValueError(
+                            "RTSP URL contains a sensitive query parameter. "
+                            "Use credential_ref for camera authentication."
+                        )
         return value
 
     def validate_consistency(self) -> None:

@@ -6,7 +6,7 @@ describe("Application Shell and Navigation", () => {
   it("renders the application and defaults to Live page", async () => {
     render(<App />);
     expect(screen.getByText("PRESYN")).toBeInTheDocument();
-    expect(screen.getByText("Waiting for camera feed")).toBeInTheDocument();
+    expect(screen.getByText("Live Ingestion & Monitoring")).toBeInTheDocument();
   });
 
   it("navigates across product areas", async () => {

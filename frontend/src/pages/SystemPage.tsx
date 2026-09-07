@@ -7,6 +7,7 @@ import {
   HardDrive,
   RefreshCw,
   Server,
+  Video,
   AlertTriangle,
   CheckCircle2,
   XCircle,
@@ -147,6 +148,54 @@ export const SystemPage: React.FC = () => {
                   ({formatBytes(healthQuery.data.system.memory_available_bytes)} free)
                 </span>
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Camera Ingestion Subsystem Panel */}
+      {healthQuery.data?.camera_subsystem && (
+        <div className="panel space-y-3">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center space-x-2">
+              <Video className="w-4 h-4 text-blue-500" />
+              <h2 className="text-sm font-semibold text-slate-200">Camera Ingestion Subsystem</h2>
+            </div>
+            <span className="badge uppercase text-[10px] font-mono tracking-wider bg-slate-900 text-slate-300 border-slate-700">
+              {healthQuery.data.camera_subsystem.status}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs font-mono">
+            <div className="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-400 block text-[11px]">Configured</span>
+              <span className="text-sm font-semibold text-slate-100 mt-0.5 block">
+                {healthQuery.data.camera_subsystem.configured}
+              </span>
+            </div>
+            <div className="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-400 block text-[11px]">Active Workers</span>
+              <span className="text-sm font-semibold text-slate-100 mt-0.5 block">
+                {healthQuery.data.camera_subsystem.running}
+              </span>
+            </div>
+            <div className="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-400 block text-[11px]">Online</span>
+              <span className="text-sm font-semibold text-emerald-400 mt-0.5 block">
+                {healthQuery.data.camera_subsystem.online}
+              </span>
+            </div>
+            <div className="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-400 block text-[11px]">Degraded</span>
+              <span className="text-sm font-semibold text-amber-400 mt-0.5 block">
+                {healthQuery.data.camera_subsystem.degraded}
+              </span>
+            </div>
+            <div className="p-2.5 rounded bg-slate-900/60 border border-slate-800">
+              <span className="text-slate-400 block text-[11px]">Offline / Disabled</span>
+              <span className="text-sm font-semibold text-slate-400 mt-0.5 block">
+                {healthQuery.data.camera_subsystem.offline}
+              </span>
             </div>
           </div>
         </div>

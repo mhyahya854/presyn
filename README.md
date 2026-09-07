@@ -4,11 +4,13 @@ Presyn is a planned local-first, CPU-optimized workplace presence, CCTV intellig
 
 ## Current Project Status
 
-**Phase 01 Implemented: Core Application Skeleton & Database Foundation**
+**Phase 02 Implemented: Camera Ingestion Engine & Live Preview**
 
-Phase 01 is implemented and verified. The repository contains the operational FastAPI backend skeleton, 23 V1 relational domain models, Alembic migration infrastructure, truthful health and system telemetry endpoints, React 18 / TypeScript / Vite frontend shell with the six planned operational hubs, custom geometric SVG favicon, dedicated Privacy Policy and Terms & Conditions pages, deterministic test suites (pytest and vitest), automated compliance audit scripts, and GitHub Actions CI.
+Phase 02 camera ingestion software is implemented and verified. The repository contains the OpenCV CPU-first camera ingestion subsystem (`opencv-python-headless` and `numpy`), decoupled capture workers, latest-frame bounded memory buffer, resilient exponential backoff reconnection, runtime-only credential resolution, camera CRUD REST API, live event WebSocket, binary JPEG frame WebSocket, and frontend operational camera console with truthful empty and connection states.
 
-Camera ingestion, face detection, and biometric pipelines remain deliberately unconstructed and will activate beginning in Phase 02.
+Physical camera acceptance is pending real hardware deployment (`PHYSICAL_WEBCAM_TEST = NOT_RUN_NO_CONFIGURED_HARDWARE` and `PHYSICAL_RTSP_TEST = NOT_RUN_NO_CONFIGURED_HARDWARE`). Automated verification utilizes deterministic synthetic video and fake capture adapters.
+
+Face detection, ArcFace embeddings, tracking, and attendance engines remain deliberately unconstructed and will activate beginning in Phase 03.
 
 For the single authoritative project standard, consult [PRESYN_MASTER_PLAN.md](PRESYN_MASTER_PLAN.md).
 
@@ -47,6 +49,37 @@ Public repository development does NOT permit sensitive runtime or biometric dat
 - **Iconography**: Lucide React SVG icons (no emojis as interface icons)
 - **Real-Time Communication**: Native browser WebSocket and FastAPI WebSocket routes
 
+## Camera Subsystem & API Overview
+
+Presyn Phase 02 introduces a dedicated, CPU-first camera ingestion subsystem built with `opencv-python-headless` and `numpy`:
+
+- **Source Architecture**: Supports `WEBCAM` (device index integer) and `RTSP` (credential-free RTSP URI). Windows capture uses DirectShow (`cv2.CAP_DSHOW`); Linux uses standard V4L2 capture; RTSP streams use OpenCV FFmpeg backend.
+- **Decoupled Capture Workers**: One independent background thread per active camera. Capture is completely decoupled from the FastAPI async event loop.
+- **Bounded Frame Buffer**: Latest-frame buffer with depth 1. Drops stale frames during downstream processing to prevent latency buildup. Ephemeral memory-only storage; no frames or video files are written to disk.
+- **Resilient Reconnection**: Automated exponential backoff (2s, 4s, 8s, 16s, 30s cap) upon stream disconnect. Automatically resets backoff upon first decoded frame.
+- **Truthful Telemetry**: Real-time per-camera metrics (`capture_fps`, `preview_fps`, `frames_decoded`, `frames_dropped`, `last_frame_age_ms`). `inference_fps` is reported as `null` in Phase 02.
+- **Runtime Credential Resolution**: Database stores only opaque references (`credential_ref`). Credentials are resolved strictly at runtime in memory from environment variables:
+  - `PRESYN_CAMERA_<REF>_USERNAME`
+  - `PRESYN_CAMERA_<REF>_PASSWORD`
+  - Example: `credential_ref: MAIN_GATE` resolves `PRESYN_CAMERA_MAIN_GATE_USERNAME` and `PRESYN_CAMERA_MAIN_GATE_PASSWORD`.
+
+### Camera REST Endpoints
+
+- `GET /api/v1/cameras` - List all configured cameras
+- `POST /api/v1/cameras` - Create camera configuration
+- `GET /api/v1/cameras/{camera_id}` - Get camera details and status
+- `PATCH /api/v1/cameras/{camera_id}` - Update camera configuration (safely restarts active worker)
+- `DELETE /api/v1/cameras/{camera_id}` - Stop worker and delete camera
+- `POST /api/v1/cameras/{camera_id}/test` - Probe camera connection without starting worker
+- `POST /api/v1/cameras/{camera_id}/start` - Start background capture worker
+- `POST /api/v1/cameras/{camera_id}/stop` - Stop worker and set status to DISABLED
+- `GET /api/v1/cameras/{camera_id}/telemetry` - Get real-time measured telemetry
+
+### WebSocket Streaming
+
+- `GET /api/v1/ws/live` - Global live event fan-out with bounded subscriber queues
+- `GET /api/v1/ws/cameras/{camera_id}/frames` - Dedicated binary JPEG live preview feed
+
 ## Repository Structure
 
 ```
@@ -69,7 +102,7 @@ Development will proceed strictly in sequential phases according to [PRESYN_MAST
 
 - **Phase 00**: Authority, Governance, Repository Baseline, and Planning (Completed)
 - **Phase 01**: Core Skeleton (FastAPI, React 18, Vite, Tailwind CSS, SQLite, Alembic, Health) (Completed)
-- **Phase 02**: Camera Ingestion Engine (Webcam, RTSP, Decoupled Queues, Reconnect, WS Video)
+- **Phase 02**: Camera Ingestion Engine (Webcam, RTSP, Decoupled Queues, Reconnect, WS Video) (Completed)
 - **Phase 03**: Face Detection & Quality Gating (SCRFD ONNX CPU, Landmarks, Blur/Size Filters)
 - **Phase 04**: Employee Domain Model & Five-View Interactive Enrollment Wizard
 - **Phase 05**: ArcFace Embedding Pipeline & Exact Normalized NumPy Vector Search

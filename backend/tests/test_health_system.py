@@ -56,7 +56,7 @@ def test_system_endpoint_success(client: TestClient):
     system_meta = SystemMetadataResponse(**data)
     assert system_meta.application == "presyn"
     assert system_meta.registered_tables == 23
-    assert system_meta.subsystems.camera_ingestion == "not_implemented"
+    assert system_meta.subsystems.camera_ingestion == "operational"
     assert system_meta.subsystems.face_detection == "not_implemented"
     assert system_meta.subsystems.face_recognition == "not_implemented"
     assert system_meta.subsystems.person_tracking == "not_implemented"

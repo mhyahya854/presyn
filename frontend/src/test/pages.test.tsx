@@ -1,16 +1,31 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LivePage } from "../pages/LivePage";
 import { AttendancePage } from "../pages/AttendancePage";
 import { PeoplePage } from "../pages/PeoplePage";
 import { SecurityPage } from "../pages/SecurityPage";
 import { AnalyticsPage } from "../pages/AnalyticsPage";
+import * as cameraApi from "../api/cameras";
 
-describe("Phase 01 Truthful Empty States", () => {
-  it("renders Live page with truthful empty state", () => {
-    render(<LivePage />);
-    expect(screen.getByText("Waiting for camera feed")).toBeInTheDocument();
-    expect(screen.getByText(/RTSP and webcam stream ingestion/i)).toBeInTheDocument();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
+describe("Truthful Empty States", () => {
+  it("renders Live page with truthful zero-camera empty state", async () => {
+    vi.spyOn(cameraApi, "fetchCameras").mockResolvedValue([]);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LivePage />
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("No cameras configured")).toBeInTheDocument();
+      expect(screen.getByText(/Configure a USB webcam or RTSP network stream/i)).toBeInTheDocument();
+      expect(screen.getAllByRole("button", { name: /add camera/i }).length).toBeGreaterThanOrEqual(1);
+    });
     expect(screen.queryByText(/fake/i)).not.toBeInTheDocument();
   });
 

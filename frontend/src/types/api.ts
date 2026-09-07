@@ -11,6 +11,15 @@ export interface MachineTelemetry {
   memory_available_bytes: number;
 }
 
+export interface CameraSubsystemHealth {
+  status: string;
+  configured: number;
+  running: number;
+  online: number;
+  degraded: number;
+  offline: number;
+}
+
 export interface HealthResponse {
   status: "healthy" | "degraded" | "unhealthy";
   application: string;
@@ -20,6 +29,7 @@ export interface HealthResponse {
   system: MachineTelemetry;
   uptime_seconds: number;
   timestamp: string;
+  camera_subsystem?: CameraSubsystemHealth;
 }
 
 export interface ArchitectureInfo {

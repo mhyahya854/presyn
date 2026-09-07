@@ -852,11 +852,16 @@ All modifications to this document must be appended to this immutable change log
 |            | PRESYN-TEST-001       | RTSP credential reference architecture,  | fix webcam support, |          | )       |
 |            |                       | 11 finite domain status enums with check | secret safety, and  |          |         |
 |            |                       | constraints, migration proof, regression.| uncontrolled strings|          |         |
-| 2026-09-07 | PRESYN-DATA-001,      | Phase 01 Database Constraint Hardening:  | Independent audit:  | APPROVED | Pending |
-|            | PRESYN-DATA-002,      | add explicit SQLite-level named CHECK    | enforce CHECK       |          | P1-Fin  |
+| 2026-09-07 | PRESYN-DATA-001,      | Phase 01 Database Constraint Hardening:  | Independent audit:  | APPROVED | d7099e2 |
+|            | PRESYN-DATA-002,      | add explicit SQLite-level named CHECK    | enforce CHECK       |          |         |
 |            | PRESYN-TEST-001       | constraints in new Alembic migration     | constraints in      |          |         |
 |            |                       | d7327f3b3421 for all finite domain enums;| migrated databases, |          |         |
 |            |                       | prove direct SQL failure on invalid data.| clean worktree.     |          |         |
+| 2026-09-07 | PRESYN-CAM-001-004,   | Phase 02 Camera Ingestion Subsystem:     | Phase 02 Milestone  | APPROVED | Pending |
+|            | PRESYN-API-002,       | OpenCV CPU capture, webcam & RTSP,       | Delivery: 76 pytest,|          | Ph 02   |
+|            | PRESYN-DATA-003,      | decoupled workers, latest-frame buffer,  | 23 vitest, synthetic|          |         |
+|            | PRESYN-CONST-001,     | exponential backoff reconnect, camera    | video, live/frame WS|          |         |
+|            | PRESYN-TEST-001       | CRUD API, live/frame WS, frontend UI.    | UI and CI green.    |          |         |
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
 ```
 
@@ -1008,14 +1013,14 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-DESIGN-016| No Fabricated Reviews, Logos, Accounts, or Counters  | Phase 01      | Truthful UI empty states| vitest App.test.tsx      | IMPLEMENTED     | Zero fake reviews, logos, or demo accounts|
 | PRESYN-DESIGN-017| No Excessive Scroll Animation or Parallax Gimmick    | Phase 01      | Standard CSS layout     | Frontend code inspection | IMPLEMENTED     | Zero parallax or scroll-jacking libraries |
 | PRESYN-DESIGN-018| Brand Assets Never Weaken Git Safety Boundaries      | Phase 01      | SVG only; strict ignore | audit_compliance.py G4   | IMPLEMENTED     | Zero binary models or biometrics in git   |
-| PRESYN-CONST-001 | Local-First CPU Architecture (No CUDA)               | Phase 01      | CPU backend dependencies| pip check; test_config   | PARTIAL         | Foundation established; CV in Phase 02+   |
+| PRESYN-CONST-001 | Local-First CPU Architecture (No CUDA)               | Phase 01-02   | backend/app/camera      | pip check; pytest (76x)  | PARTIAL         | CPU OpenCV capture verified; ML in Ph 03+ |
 | PRESYN-CONST-002 | Target Office CPU Optimization (Core i7-1355U class) | Phase 01      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 01 / Phase 18              |
 | PRESYN-CONST-003 | 100+ Employees / ~5,000 Embedding Capacity Envelope  | Phase 05      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 05 / Phase 18              |
 | PRESYN-CONST-004 | 90-95% Calibrated Recognition Accuracy Envelope      | Phase 06      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 06                         |
-| PRESYN-CAM-001   | RTSP and Webcam Ingestion Architecture               | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
-| PRESYN-CAM-002   | Automated Reconnection with Exponential Backoff      | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
-| PRESYN-CAM-003   | Decoupled Capture and Inference Frame Throttling     | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
-| PRESYN-CAM-004   | Ingestion Telemetry & Health Monitoring              | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
+| PRESYN-CAM-001   | RTSP and Webcam Ingestion Architecture               | Phase 02      | backend/app/camera      | test_camera_adapter.py  | PARTIAL         | Software verified; physical test pending |
+| PRESYN-CAM-002   | Automated Reconnection with Exponential Backoff      | Phase 02      | app/camera/worker.py    | test_camera_worker.py   | IMPLEMENTED     | Exponential backoff (2-30s) and reset    |
+| PRESYN-CAM-003   | Decoupled Capture and Inference Frame Throttling     | Phase 02      | app/camera/frame_buffer | test_frame_buffer.py    | IMPLEMENTED     | Threaded capture; bounded depth 1 buffer |
+| PRESYN-CAM-004   | Ingestion Telemetry & Health Monitoring              | Phase 02      | app/camera/telemetry.py | test_camera_worker.py   | IMPLEMENTED     | Real measured FPS, drop/age telemetry    |
 | PRESYN-REC-001   | SCRFD ONNX Face Detection & 5-Point Landmarks        | Phase 03      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 03                         |
 | PRESYN-REC-002   | Face Quality Filtering (Blur, Size, Illumination)    | Phase 03      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 03                         |
 | PRESYN-REC-003   | ArcFace ONNX 512D Normalized Embedding Extraction    | Phase 05      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 05                         |
@@ -1047,9 +1052,9 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-OPT-004   | Optional Aggregate Facial Expression Trend Analysis   | Phase 17      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 17                         |
 | PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | backend/app/db/models   | pytest (38 backend tests)| IMPLEMENTED     | 23 models; webcam/RTSP; DB-level CHECKs  |
 | PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | alembic.ini, migrations | test_migrations.py (7x)  | IMPLEMENTED     | 3 revisions: v1 + hardening; direct SQL  |
-| PRESYN-DATA-003  | CCTV Storage Boundary (No 24/7 Video Archiving)       | Phase 01      | DB schema / .gitignore  | test_models.py           | PARTIAL         | Schema boundaries defined; video in Ph 02 |
+| PRESYN-DATA-003  | CCTV Storage Boundary (No 24/7 Video Archiving)       | Phase 01-02   | app/camera/frame_buffer | test_synthetic_video.py | IMPLEMENTED     | Memory-only frames; zero disk storage    |
 | PRESYN-API-001   | Versioned REST API Architecture (`/api/v1`)           | Phase 01      | backend/app/api/router  | test_health_system.py    | PARTIAL         | Health & system v1 live; CRUD in Ph 04-13 |
-| PRESYN-API-002   | Native WebSocket Live Streaming Contract              | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
+| PRESYN-API-002   | Native WebSocket Live Streaming Contract              | Phase 02      | app/api/routes/ws.py    | test_camera_websocket.py| PARTIAL         | Live/frame WS verified; identity pending |
 | PRESYN-UI-001    | Six Primary Operational Information Architecture Hubs | Phase 01      | 6 domain pages & App    | vitest App.test.tsx      | IMPLEMENTED     | Live, Attendance, People, Security, etc.  |
 | PRESYN-UI-002    | High-Legibility Modern Interface (React + Tailwind)   | Phase 01      | React 18, Vite, Tailwind| npm run build; vitest    | IMPLEMENTED     | Clean slate theme; high-contrast tokens   |
 | PRESYN-UI-003    | Project-Owned SVG Visualizations (No Bloat)           | Phase 16      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 16                         |
@@ -1057,7 +1062,7 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-SEC-002   | Role-Based Access Control (RBAC) Governance           | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
 | PRESYN-SEC-003   | Immutable Append-Only Audit Logging Architecture      | Phase 01      | audit_log model schema  | test_models.py           | PARTIAL         | Schema foundation live; signing in Ph 19  |
 | PRESYN-SEC-004   | Granular Data Retention Policies and Automated Purge  | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
-| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | pytest & vitest, CI     | 38 pytest, 17 vitest, CI | PARTIAL         | Core test harness live; expands per phase |
+| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01-02   | pytest & vitest, CI     | 76 pytest, 23 vitest, CI | PARTIAL         | Expanded camera harness; synthetic video  |
 | PRESYN-TEST-002  | 100+ Identity / 5,000 Vector Scale Benchmark Suite    | Phase 18      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 18                         |
 | PRESYN-TEST-003  | 1-Hour Soak Stability Verification Test               | Phase 20      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 20                         |
 +------------------+------------------------------------------------------+---------------+-------------------------+-------------------------+-----------------+------------------------------------------+
