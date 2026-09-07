@@ -847,11 +847,16 @@ All modifications to this document must be appended to this immutable change log
 |            | PRESYN-DESIGN-009-018 | FastAPI, 23 models, Alembic, health API, | milestone delivery  |          | (Ph 01) |
 |            | PRESYN-DATA-001-003   | React 18, Vite, Tailwind, 6 domain shells|                     |          |         |
 |            | PRESYN-UI-001-002     | favicon, legal pages, tests, CI.         |                     |          |         |
-| 2026-09-06 | PRESYN-DATA-001,      | Phase 01 Post-Implementation Correction: | Independent post-   | APPROVED | Pending |
+| 2026-09-06 | PRESYN-DATA-001,      | Phase 01 Post-Implementation Correction: | Independent post-   | APPROVED | 7e8dd61 |
 |            | PRESYN-CAM-001 (found)| webcam/RTSP source model, secret-safe    | Phase 01 audit:     |          | (P1-Corr|
 |            | PRESYN-TEST-001       | RTSP credential reference architecture,  | fix webcam support, |          | )       |
 |            |                       | 11 finite domain status enums with check | secret safety, and  |          |         |
 |            |                       | constraints, migration proof, regression.| uncontrolled strings|          |         |
+| 2026-09-07 | PRESYN-DATA-001,      | Phase 01 Database Constraint Hardening:  | Independent audit:  | APPROVED | Pending |
+|            | PRESYN-DATA-002,      | add explicit SQLite-level named CHECK    | enforce CHECK       |          | P1-Fin  |
+|            | PRESYN-TEST-001       | constraints in new Alembic migration     | constraints in      |          |         |
+|            |                       | d7327f3b3421 for all finite domain enums;| migrated databases, |          |         |
+|            |                       | prove direct SQL failure on invalid data.| clean worktree.     |          |         |
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
 ```
 
@@ -1040,8 +1045,8 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-OPT-002   | Optional Mask Detection & Stricter Matching Policy    | Phase 14      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 14                         |
 | PRESYN-OPT-003   | Optional Liveness Probe (Unavailable != Passed)       | Phase 15      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 15                         |
 | PRESYN-OPT-004   | Optional Aggregate Facial Expression Trend Analysis   | Phase 17      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 17                         |
-| PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | backend/app/db/models   | pytest (34 backend tests)| IMPLEMENTED     | 23 models; webcam/RTSP; enums & checks   |
-| PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | alembic.ini, migrations | test_migrations.py (3x)  | IMPLEMENTED     | 2 revisions: v1 + hardening; Path A & B  |
+| PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | backend/app/db/models   | pytest (38 backend tests)| IMPLEMENTED     | 23 models; webcam/RTSP; DB-level CHECKs  |
+| PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | alembic.ini, migrations | test_migrations.py (7x)  | IMPLEMENTED     | 3 revisions: v1 + hardening; direct SQL  |
 | PRESYN-DATA-003  | CCTV Storage Boundary (No 24/7 Video Archiving)       | Phase 01      | DB schema / .gitignore  | test_models.py           | PARTIAL         | Schema boundaries defined; video in Ph 02 |
 | PRESYN-API-001   | Versioned REST API Architecture (`/api/v1`)           | Phase 01      | backend/app/api/router  | test_health_system.py    | PARTIAL         | Health & system v1 live; CRUD in Ph 04-13 |
 | PRESYN-API-002   | Native WebSocket Live Streaming Contract              | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
@@ -1052,7 +1057,7 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-SEC-002   | Role-Based Access Control (RBAC) Governance           | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
 | PRESYN-SEC-003   | Immutable Append-Only Audit Logging Architecture      | Phase 01      | audit_log model schema  | test_models.py           | PARTIAL         | Schema foundation live; signing in Ph 19  |
 | PRESYN-SEC-004   | Granular Data Retention Policies and Automated Purge  | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
-| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | pytest & vitest, CI     | 34 pytest, 17 vitest, CI | PARTIAL         | Core test harness live; expands per phase |
+| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | pytest & vitest, CI     | 38 pytest, 17 vitest, CI | PARTIAL         | Core test harness live; expands per phase |
 | PRESYN-TEST-002  | 100+ Identity / 5,000 Vector Scale Benchmark Suite    | Phase 18      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 18                         |
 | PRESYN-TEST-003  | 1-Hour Soak Stability Verification Test               | Phase 20      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 20                         |
 +------------------+------------------------------------------------------+---------------+-------------------------+-------------------------+-----------------+------------------------------------------+
