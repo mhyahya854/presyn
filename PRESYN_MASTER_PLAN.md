@@ -263,21 +263,27 @@ Optional capabilities must never compromise the resilience, startup speed, or ba
 
 ## 9. CAMERA AND INGESTION ARCHITECTURE
 
-### 9.1 Supported Sources
-- Direct USB/V4L2/DirectShow webcams (device indices `0, 1, 2...`)
-- Network IP cameras streaming via RTSP (`rtsp://user:pass@host:554/stream`)
+### 9.1 Supported Sources and Domain Model
+- Direct USB/V4L2/DirectShow webcams (`source_type = WEBCAM`, `device_index = 0, 1, 2...`, `rtsp_url = NULL`)
+- Network IP cameras streaming via credential-free RTSP (`source_type = RTSP`, `device_index = NULL`, `rtsp_url = rtsp://camera.local/stream`, `credential_ref = optional opaque identifier`)
 - Synthetic test video files / MJPEG streams for repeatable automated testing
 
-### 9.2 Ingestion Engine Capabilities
+### 9.2 Camera Secret Boundary Architecture
+- **Permanent Secret Rule**: Camera authentication secrets (usernames, passwords, tokens) are NEVER stored directly in the camera database table, NEVER committed to Git, and NEVER returned through general health or system telemetry endpoints.
+- **Credential Reference**: The database stores only non-secret stream addresses (`rtsp_url`) and an optional opaque reference key (`credential_ref`, e.g., `MAIN_ENTRANCE_CAMERA`).
+- **Runtime-Only Secret Resolution**: In Phase 02, actual stream credentials will be resolved at runtime from local deployment configuration or secure environment variables, not from Git and not from general client responses.
+- **Model-Level Safeguards**: Inline URI userinfo credentials (prohibiting usernames or passwords embedded before the host authority) are rejected by model validation without echoing the credential or logging the secret-bearing URL. Query parameters must likewise never contain sensitive tokens.
+
+### 9.3 Ingestion Engine Capabilities
 - **Decoupled Capture and Inference**: Separate background capture threads read camera frames continuously to avoid buffer latency, while inference workers consume frames at a controlled, throttled rate (e.g., 5 FPS).
 - **Automated Reconnect Logic**: Network connection drops trigger exponential backoff reconnection loops (initial 2s, doubling up to 30s) without blocking sibling cameras.
 - **Telemetry Tracking**:
-  - Camera online/offline status
+  - Camera online/offline status (using controlled `CameraStatus` enums)
   - Capture FPS vs. Processed Inference FPS
   - Inter-frame latency and total processing pipeline duration
   - Timestamp of last successfully decoded frame
   - Error and dropped frame counters
-- **Configuration Persistence**: Camera definitions (URL, credentials, name, location, enabled state, target FPS) are persisted in the database and manageable via REST API.
+- **Configuration Persistence**: Camera definitions (name, location, source_type, device_index, rtsp_url, credential_ref, is_active, target_fps, reconnect_delay, status) are persisted in the database and manageable via REST API without secret leakage.
 
 ---
 
@@ -841,6 +847,11 @@ All modifications to this document must be appended to this immutable change log
 |            | PRESYN-DESIGN-009-018 | FastAPI, 23 models, Alembic, health API, | milestone delivery  |          | (Ph 01) |
 |            | PRESYN-DATA-001-003   | React 18, Vite, Tailwind, 6 domain shells|                     |          |         |
 |            | PRESYN-UI-001-002     | favicon, legal pages, tests, CI.         |                     |          |         |
+| 2026-09-06 | PRESYN-DATA-001,      | Phase 01 Post-Implementation Correction: | Independent post-   | APPROVED | Pending |
+|            | PRESYN-CAM-001 (found)| webcam/RTSP source model, secret-safe    | Phase 01 audit:     |          | (P1-Corr|
+|            | PRESYN-TEST-001       | RTSP credential reference architecture,  | fix webcam support, |          | )       |
+|            |                       | 11 finite domain status enums with check | secret safety, and  |          |         |
+|            |                       | constraints, migration proof, regression.| uncontrolled strings|          |         |
 +------------+-----------------------+------------------------------------------+---------------------+----------+---------+
 ```
 
@@ -1029,8 +1040,8 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-OPT-002   | Optional Mask Detection & Stricter Matching Policy    | Phase 14      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 14                         |
 | PRESYN-OPT-003   | Optional Liveness Probe (Unavailable != Passed)       | Phase 15      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 15                         |
 | PRESYN-OPT-004   | Optional Aggregate Facial Expression Trend Analysis   | Phase 17      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 17                         |
-| PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | backend/app/db/models   | test_models.py (14 tests)| IMPLEMENTED     | 23 domain models; sha256_hash standard    |
-| PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | alembic.ini, migrations | test_migrations.py (3x)  | IMPLEMENTED     | Revision fc17a53ea5e7 up/down/re-up passes|
+| PRESYN-DATA-001  | Relational SQLite Schema with 23 Domain Entities      | Phase 01      | backend/app/db/models   | pytest (34 backend tests)| IMPLEMENTED     | 23 models; webcam/RTSP; enums & checks   |
+| PRESYN-DATA-002  | Alembic Schema Migrations Infrastructure              | Phase 01      | alembic.ini, migrations | test_migrations.py (3x)  | IMPLEMENTED     | 2 revisions: v1 + hardening; Path A & B  |
 | PRESYN-DATA-003  | CCTV Storage Boundary (No 24/7 Video Archiving)       | Phase 01      | DB schema / .gitignore  | test_models.py           | PARTIAL         | Schema boundaries defined; video in Ph 02 |
 | PRESYN-API-001   | Versioned REST API Architecture (`/api/v1`)           | Phase 01      | backend/app/api/router  | test_health_system.py    | PARTIAL         | Health & system v1 live; CRUD in Ph 04-13 |
 | PRESYN-API-002   | Native WebSocket Live Streaming Contract              | Phase 02      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 02                         |
@@ -1041,7 +1052,7 @@ This matrix serves as the ultimate acceptance ledger for the Presyn project. Eve
 | PRESYN-SEC-002   | Role-Based Access Control (RBAC) Governance           | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
 | PRESYN-SEC-003   | Immutable Append-Only Audit Logging Architecture      | Phase 01      | audit_log model schema  | test_models.py           | PARTIAL         | Schema foundation live; signing in Ph 19  |
 | PRESYN-SEC-004   | Granular Data Retention Policies and Automated Purge  | Phase 19      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 19                         |
-| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | pytest & vitest, CI     | 14 pytest, 17 vitest, CI | PARTIAL         | Core test harness live; expands per phase |
+| PRESYN-TEST-001  | Automated Unit, Integration, & Regression Test Suite  | Phase 01      | pytest & vitest, CI     | 34 pytest, 17 vitest, CI | PARTIAL         | Core test harness live; expands per phase |
 | PRESYN-TEST-002  | 100+ Identity / 5,000 Vector Scale Benchmark Suite    | Phase 18      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 18                         |
 | PRESYN-TEST-003  | 1-Hour Soak Stability Verification Test               | Phase 20      | Pending Implementation  | Pending Test Execution  | NOT IMPLEMENTED | Planned Phase 20                         |
 +------------------+------------------------------------------------------+---------------+-------------------------+-------------------------+-----------------+------------------------------------------+

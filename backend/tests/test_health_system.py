@@ -72,3 +72,32 @@ def test_no_secrets_exposed_in_api(client: TestClient):
         assert settings.SECRET_KEY.lower() not in content
         assert "password" not in content
         assert "token" not in content
+
+
+def test_no_camera_credentials_in_health_system_endpoints(client: TestClient, db_session):
+    """Verify health and system endpoints do not expose rtsp_url, credential_ref, or secret material."""
+    from backend.app.db.enums import CameraSourceType, CameraStatus
+    from backend.app.db.models.camera import Camera
+
+    # Populate camera with stream URL and credential reference in DB
+    cam = Camera(
+        name="secure_perimeter_cam",
+        source_type=CameraSourceType.RTSP,
+        device_index=None,
+        rtsp_url="rtsp://example.invalid/secure_feed",
+        credential_ref="MAIN_GATE_OPAQUE_SECRET_REF",
+        status=CameraStatus.OFFLINE,
+    )
+    db_session.add(cam)
+    db_session.flush()
+
+    for path in ["/", "/api/v1/health", "/api/v1/system"]:
+        response = client.get(path)
+        assert response.status_code == 200
+        raw_text = response.text
+        assert "rtsp_url" not in raw_text
+        assert "credential_ref" not in raw_text
+        assert "MAIN_GATE_OPAQUE_SECRET_REF" not in raw_text
+        assert "example.invalid" not in raw_text
+        assert "secure_feed" not in raw_text
+

@@ -10,6 +10,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from backend.app.db.base import Base
+import backend.app.db.models  # noqa: F401
 from backend.app.db.session import get_db
 from backend.app.main import app
 

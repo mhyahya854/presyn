@@ -10,6 +10,7 @@ from backend.app.api.router import api_v1_router
 from backend.app.core.config import settings
 from backend.app.core.exceptions import PresynException
 from backend.app.core.logging import logger
+import backend.app.db.models  # noqa: F401
 from backend.app.db.session import ensure_data_directory
 
 
